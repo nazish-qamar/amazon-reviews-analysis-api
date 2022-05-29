@@ -1,0 +1,3 @@
+get cURL (bash) data from Chrome's developer Tool -> Network -> Doc 
+
+Use any online curl converter get header from the cURL (bash) data
