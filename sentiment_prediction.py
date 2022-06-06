@@ -1,29 +1,33 @@
-import csv
-from transformers import pipeline
+from fetch_reviews import get_review
+from sentiment_prediction import get_sentiment_overview
+from database_utility import ReviewDatabase
+import streamlit as st
 
-def load_review(review_choice):
-    reviews = []
-    with open(review_choice, "r") as fp:
-        csv_reader = csv.reader(fp, delimiter="\n")
-        for row in csv_reader:
-            row_whole = " ".join(row)
-            reviews.append(row_whole)
-    return reviews
+if __name__ == '__main__':
+    db_object = ReviewDatabase("product_reviews")
+    db_object.create_table()
 
-def get_sentiment_overview(review_choice):
-    #https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment
-    #sentiment_pipeline = pipeline("sentiment-analysis", model="nlptown/bert-base-multilingual-uncased-sentiment")
-    sentiment_pipeline = pipeline("sentiment-analysis")
-    review_file = "available-reviews/" + review_choice
-    reviews = load_review(review_file)
-    senti = sentiment_pipeline(reviews)
-    pos = 0
-    neg = 0
-    for each in senti:
-        if each['label'].lower()   == "positive":
-            pos +=1
-        elif each['label'].lower()   == "negative":
-            neg +=1
+    st.title("Product Reviews Overview")
+    choice = st.selectbox("Select Action", ("Scrape Reviews", "Predict Sentiment"))
 
-    positive_percentage = "Positivity rate: " + str(round(100 * pos/(neg + pos),2)) + " %"
-    return (positive_percentage)
+    if "Scrape Reviews" == choice:
+        st.write("Please copy the complete URL of the product page and paste below!")
+        url = st.text_input("Product URL")
+        if url:
+            reviews_dict = get_review(url)
+            db_object.add_data(reviews_dict)
+            st.write("Done!")
+
+    else:
+        files = db_object.get_product_titles()
+        file_choice = st.selectbox("Choose the review file for sentiment overview", files)
+        content = db_object.get_product_review(file_choice)
+
+        st.write("Product URL:", content[2])
+
+        button_choice = st.button('Predict Review Sentiment!')
+        if button_choice:
+            with st.spinner('Wait for it...'):
+                review_msg = get_sentiment_overview(content[1])
+                st.write("Total Reviews: " + str(review_msg["total_reviews"]))
+                st.write("Positive Reviews: " + str(review_msg["positive"]))
