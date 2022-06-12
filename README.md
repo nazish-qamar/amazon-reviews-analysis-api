@@ -12,7 +12,7 @@ A web API for an interactive dashboard where the user has options to scrape a ne
 #### Contains the logic for sentiment prediction of review available for a product chosen from the drop-down menu.
 
 ### 4.database_utility.py
-#### A SQLite database utility file that provides APIs for storing and loading the user reviews for a product.
+#### SQLite database utility that provides APIs for storing and loading the user reviews for a product.
 
 ### 5.requirements.txt
 #### The file contains the list of all the required libraries
