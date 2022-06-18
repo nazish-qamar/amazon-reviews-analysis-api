@@ -19,7 +19,7 @@ A web API for an interactive dashboard where the user has options to scrape a ne
 
 
 ## Running Project
-#### 1. Type the following command for running the project in the terminal of the IDE
-####    "streamlit run main.py"
+#### 1. Run the following command in the terminal of the IDE
+####      	"streamlit run main.py"
 #### 2. Click on the link shown after running the above command
 #### 3. Select the required action from the drop-down menu and proceed as directed
