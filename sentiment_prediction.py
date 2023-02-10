@@ -1,4 +1,5 @@
 import csv
+import ast
 from transformers import pipeline
 
 def load_review(review_choice):
@@ -10,20 +11,21 @@ def load_review(review_choice):
             reviews.append(row_whole)
     return reviews
 
-def get_sentiment_overview(review_choice):
+def get_sentiment_overview(content):
+    result = ast.literal_eval(content)
     #https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment
-    #sentiment_pipeline = pipeline("sentiment-analysis", model="nlptown/bert-base-multilingual-uncased-sentiment")
+    sentiment_pipeline = pipeline("sentiment-analysis", model="nlptown/bert-base-multilingual-uncased-sentiment")
     sentiment_pipeline = pipeline("sentiment-analysis")
-    review_file = "available-reviews/" + review_choice
-    reviews = load_review(review_file)
-    senti = sentiment_pipeline(reviews)
+    senti = sentiment_pipeline(result)
     pos = 0
     neg = 0
     for each in senti:
-        if each['label'].lower()   == "positive":
-            pos +=1
-        elif each['label'].lower()   == "negative":
-            neg +=1
+        if each['label'].lower() == "positive":
+            pos += 1
+        elif each['label'].lower() == "negative":
+            neg += 1
 
-    positive_percentage = "Positivity rate: " + str(round(100 * pos/(neg + pos),2)) + " %"
-    return (positive_percentage)
+    show_result ={}
+    show_result["total_reviews"]= (pos+neg)
+    show_result["positive"] = pos
+    return (show_result)

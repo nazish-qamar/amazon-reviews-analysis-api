@@ -44,20 +44,36 @@ def html_code(url):
     # into getdata function
     htmldata = getdata(url)
     soup = BeautifulSoup(htmldata, 'html.parser')
-
-    # display html code
     return (soup)
 
 
-def customer_review(soup):
-    # find the Html tag
-    # with find()
-    # and convert into string
-    data_str = ""
-    all_reviews = soup.find_all("span", class_="a-size-base review-text review-text-content")
+def customer_review(url):
+    url_review = url.split("/")[0] + "/" + \
+                 url.split("/")[1] + "/" + \
+                 url.split("/")[2] + "/" + \
+                 url.split("/")[3] + "/" + \
+                 "product-reviews/" + \
+                 url.split("/")[5] + "/" + "ref=cm_cr_getr_d_paging_btm_prev_1?ie=UTF8&reviewerType=all_reviews&sortBy=recent&pageNumber=1"
 
-    for item in all_reviews:
-        data_str = data_str + item.get_text()
+    data_str = ""
+
+    while True:
+        soup = html_code(url_review)
+        all_reviews = soup.find_all("span", class_="a-size-base review-text review-text-content")
+
+        for item in all_reviews:
+            data_str = data_str + item.get_text()
+
+        next_page = soup.find_all("li", class_="a-disabled a-last")
+        if next_page:
+            break
+
+        else:
+            temp_url = url_review.split("=")
+            now = str(int(temp_url[-1]) + 1)
+            temp_url[-1] = now
+            url_review = ("=".join(temp_url))
+            print(url_review)
 
     result = data_str.split("\n")
 
@@ -68,31 +84,23 @@ def customer_review(soup):
         else:
             rev_result.append(i)
 
-    return (rev_result)
+    return rev_result
 
 
 def get_review(url):
-    #url = "https://www.amazon.com/Aiw-Wfdnn-Beanie-Trust-DeepHeather/dp/B07HY25PQ6/ref=sr_1_2?keywords=gaming%2Bhats&pd_rd_r=a37e132e-358f-4645-84d4-f0e8532384d4&pd_rd_w=bIa6V&pd_rd_wg=rHpMJ&pf_rd_p=09483392-9ac6-434a-a3d7-39d83662f54a&pf_rd_r=X6PC9DZEVSHW1XB0Y12J&qid=1653944503&sr=8-2&th=1&psc=1"
-    url_review = url.split("/")[0] + "/" + \
-                 url.split("/")[1] + "/" + \
-                 url.split("/")[2] + "/" + \
-                 url.split("/")[3] + "/" + \
-                 "product-reviews/" + \
-                 url.split("/")[5] + "/" + "ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
+    # url = "https://www.amazon.com/Aiw-Wfdnn-Beanie-Trust-DeepHeather/dp/B07HY25PQ6/ref=sr_1_2?keywords=gaming%2Bhats&pd_rd_r=a37e132e-358f-4645-84d4-f0e8532384d4&pd_rd_w=bIa6V&pd_rd_wg=rHpMJ&pf_rd_p=09483392-9ac6-434a-a3d7-39d83662f54a&pf_rd_r=X6PC9DZEVSHW1XB0Y12J&qid=1653944503&sr=8-2&th=1&psc=1"
+    product_review = {}
+    item_review = customer_review(url)
 
-    soup = html_code(url_review)
-    item_review = customer_review(soup)
+    product_review["title"] = str(" ".join((url.split("/")[3]).split("-")))
+    product_review["comments"] = str([str(row) for row in item_review if row != ""])
+    product_review["url"] = url
+    # product_review["time_stamp"]
 
-    item_reviews = [str(row) for row in item_review if row != ""]
-    print(item_reviews)
-    filename = "available-reviews/" + url.split("/")[3] + ".csv"
+    # filename = "available-reviews/" + url.split("/")[3] + ".csv"
 
-    with open(filename, 'w') as f:
-        writer = csv.writer(f, delimiter='\n')
-        writer.writerow(item_reviews)
+    # with open(filename, 'w') as f:
+    #    writer = csv.writer(f, delimiter='\n')
+    #    writer.writerow(item_reviews)
+    return product_review
 
-
-def get_available_files():
-    mainpath = "available-reviews"
-    available_files = (f for f in listdir(mainpath) if isfile(join(mainpath, f)))
-    return (available_files)
