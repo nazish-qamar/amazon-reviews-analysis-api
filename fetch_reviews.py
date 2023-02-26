@@ -48,12 +48,25 @@ def html_code(url):
 
 
 def customer_review(url):
-    url_review = url.split("/")[0] + "/" + \
+
+    if url.split("/")[3] != "-":
+        url_review = url.split("/")[0] + "/" + \
                  url.split("/")[1] + "/" + \
                  url.split("/")[2] + "/" + \
                  url.split("/")[3] + "/" + \
                  "product-reviews/" + \
                  url.split("/")[5] + "/" + "ref=cm_cr_getr_d_paging_btm_prev_1?ie=UTF8&reviewerType=all_reviews&sortBy=recent&pageNumber=1"
+
+    else:
+        url_review = url.split("/")[0] + "/" + \
+                     url.split("/")[1] + "/" + \
+                     url.split("/")[2] + "/" + \
+                     url.split("/")[3] + "/" + \
+                     url.split("/")[4] + "/" + \
+                     url.split("/")[5] + "/" + \
+                     "product-reviews/" + \
+                     url.split("/")[
+                         7] + "/" + "ref=cm_cr_getr_d_paging_btm_prev_1?ie=UTF8&reviewerType=all_reviews&sortBy=recent&pageNumber=1"
 
     data_str = ""
 
@@ -65,7 +78,12 @@ def customer_review(url):
             data_str = data_str + item.get_text()
 
         next_page = soup.find_all("li", class_="a-disabled a-last")
-        if next_page:
+
+        to_break = True ##temporary work around
+        for link in next_page:
+            to_break=False
+
+        if to_break:
             break
 
         else:
