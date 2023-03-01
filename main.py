@@ -8,7 +8,7 @@ if __name__ == '__main__':
     db_object.create_table()
 
     st.title("Product Reviews Overview")
-    choice = st.selectbox("Select Action", ("Scrape Reviews", "Predict Sentiment"))
+    choice = st.selectbox("Select Action", ("Predict Sentiment", "Scrape Reviews"))
 
     if "Scrape Reviews" == choice:
         st.write("Please copy the complete URL of the product page and paste below!")
