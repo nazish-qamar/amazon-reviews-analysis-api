@@ -1,6 +1,7 @@
 # amazon-reviews-sentiment
  A streamlit based API for scraping customer review for an amazon product and predict the sentiment classification report
 
+### Demo: https://nazish-qamar-amazon-reviews-analysis-api-main-ux0gr4.streamlit.app/
 ### Technical details:
 #### 1) Streamlit library for interative dashboard
 #### 2) fetch_reviews.py : web scraping implementation using beautiful soup library
