@@ -1,9 +1,7 @@
 # import module
-import csv
 import requests
 from bs4 import BeautifulSoup
-from os import listdir
-from os.path import isfile, join
+
 
 # user define function
 # Scrape the data
@@ -17,7 +15,6 @@ HEADERS = ({'authority': 'www.amazon.com',
             'downlink': '1.1',
             'dpr': '1',
             'ect': '4g',
-            # 'referer': 'https://www.amazon.com/Cycling-Gloves-Bike-Men-Shock-Absorbing/dp/B08VRKTP28/ref=sr_1_8?crid=1ZZEV65PFSKTF&keywords=bike%2Bglove&qid=1653822777&sprefix=bike%2Bglove%2Caps%2C450&sr=8-8&th=1',
             'rtt': '150',
             'sec-ch-device-memory': '8',
             'sec-ch-dpr': '1',
@@ -70,28 +67,29 @@ def customer_review(url):
 
     data_str = ""
 
+    total_pages_scraped = 0
     while True:
-        soup = html_code(url_review)
-        all_reviews = soup.find_all("span", class_="a-size-base review-text review-text-content")
-
-        for item in all_reviews:
-            data_str = data_str + item.get_text()
-
-        next_page = soup.find_all("li", class_="a-disabled a-last")
-
-        to_break = True ##temporary work around
-        for link in next_page:
-            to_break=False
-
-        if to_break:
+        if total_pages_scraped > 10:
             break
 
-        else:
-            temp_url = url_review.split("=")
-            now = str(int(temp_url[-1]) + 1)
-            temp_url[-1] = now
-            url_review = ("=".join(temp_url))
-            print(url_review)
+        soup = html_code(url_review)
+        all_reviews = []
+        all_reviews = soup.find_all("span", class_="a-size-base review-text review-text-content")
+
+        pageExisted = False
+        for item in all_reviews:
+            pageExisted = True
+            data_str = data_str + item.get_text()
+
+        #next_page = soup.find_all("li", class_="a-disabled a-last")
+        if not pageExisted:
+            break
+
+        temp_url = url_review.split("=")
+        now = str(int(temp_url[-1]) + 1)
+        temp_url[-1] = now
+        url_review = ("=".join(temp_url))
+        total_pages_scraped += 1
 
     result = data_str.split("\n")
 
@@ -113,12 +111,5 @@ def get_review(url):
     product_review["title"] = str(" ".join((url.split("/")[3]).split("-")))
     product_review["comments"] = str([str(row) for row in item_review if row != ""])
     product_review["url"] = url
-    # product_review["time_stamp"]
-
-    # filename = "available-reviews/" + url.split("/")[3] + ".csv"
-
-    # with open(filename, 'w') as f:
-    #    writer = csv.writer(f, delimiter='\n')
-    #    writer.writerow(item_reviews)
     return product_review
 
