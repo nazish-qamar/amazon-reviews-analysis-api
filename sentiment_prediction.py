@@ -13,7 +13,6 @@ def load_review(review_choice):
 
 def get_sentiment_overview(content):
     result = ast.literal_eval(content)
-    #https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment
     #sentiment_pipeline = pipeline("sentiment-analysis", model="nlptown/bert-base-multilingual-uncased-sentiment")
     sentiment_pipeline = pipeline("sentiment-analysis")
     senti = sentiment_pipeline(result)
