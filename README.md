@@ -6,8 +6,8 @@
 #### 1) Streamlit library for interactive dashboard
 #### 2) fetch_reviews.py : web scraping implementation using beautiful soup library
 #### 3) database_utility.py: logic for storing and retrieving scraped reviews in SQLite database file
-#### 4) sentiment_prediction.py: sentiment prediction of the stored reviews using Transformer model. Currently using the HuggingFace model (Ref: https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment
-
+#### 4) sentiment_prediction.py: sentiment prediction of the stored reviews using Transformer model. Currently using a tensorflow model trained from IMDB movie reviews. However, it is also possible to use pretrained models like from HuggingFace (Ref: https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment
+#### 5) tensorflow_utility: for training a tensorflow BERT model from IMDB reviews labeled dataset
 
 ### Instructions:
 #### 1) Run the main.py file using command "streamlit run main.py"

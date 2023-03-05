@@ -3,3 +3,5 @@ requests
 tensorflow
 transformers
 streamlit
+tf-models-official
+tensorflow-text
